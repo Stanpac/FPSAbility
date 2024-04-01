@@ -6,39 +6,29 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "TP_WeaponComponent.generated.h"
 
+class UFPSA_GABase;
+class UImage;
 class AFPSAbilityCharacter;
 
 UCLASS(Blueprintable, BlueprintType, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FPSABILITY_API UTP_WeaponComponent : public USkeletalMeshComponent
 {
 	GENERATED_BODY()
-
-public:
-	/** Projectile class to spawn */
-	UPROPERTY(EditDefaultsOnly, Category=Projectile)
-	TSubclassOf<class AFPSAbilityProjectile> ProjectileClass;
-
-	/** Sound to play each time we fire */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
-	USoundBase* FireSound;
+	/* ----------------------------------------- MEMBERS ------------------------------------------------------- */
+protected:
+	/** The Character holding this weapon*/
+	TObjectPtr<AFPSAbilityCharacter> Character;
 	
 	/** AnimMontage to play each time we fire */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	UAnimMontage* FireAnimation;
 
-	/** Gun muzzle's offset from the characters location */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
-	FVector MuzzleOffset;
-
-	/** MappingContext */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	class UInputMappingContext* FireMappingContext;
-
-	/** Fire Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	class UInputAction* FireAction;
-
-	/** Sets default values for this component's properties */
+	/** Ability to use */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, DisplayName = "Ability To Use")
+	TSubclassOf<UFPSA_GABase> m_AbilityToUse;
+	
+	/* ----------------------------------------- FUNCTIONS -------------------------------------------------------*/
+public:
 	UTP_WeaponComponent();
 
 	/** Attaches the actor to a FirstPersonCharacter */
@@ -47,14 +37,9 @@ public:
 
 	/** Make the weapon Fire a Projectile */
 	UFUNCTION(BlueprintCallable, Category="Weapon")
-	void Fire();
+	void UseAbility();
 
-protected:
-	/** Ends gameplay for this component. */
-	UFUNCTION()
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
-private:
-	/** The Character holding this weapon*/
-	AFPSAbilityCharacter* Character;
+	/* ----------------------------------------- GET / SET -------------------------------------------------------*/
+	
+	FORCEINLINE TSubclassOf<UFPSA_GABase> GetAbilityToUse() const { return m_AbilityToUse; }
 };

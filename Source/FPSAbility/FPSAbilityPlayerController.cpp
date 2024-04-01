@@ -2,7 +2,10 @@
 
 
 #include "FPSAbilityPlayerController.h"
+
+#include "AbilitySystemComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "FPSAbilityCharacter.h"
 
 void AFPSAbilityPlayerController::BeginPlay()
 {
@@ -15,5 +18,15 @@ void AFPSAbilityPlayerController::BeginPlay()
 		Subsystem->AddMappingContext(InputMappingContext, 0);
 
 		UE_LOG(LogTemp, Warning, TEXT("BeginPlay"));
+	}
+}
+
+void AFPSAbilityPlayerController::AcknowledgePossession(APawn* P)
+{
+	Super::AcknowledgePossession(P);
+	AFPSAbilityCharacter* CharacterBase = Cast<AFPSAbilityCharacter>(P);
+	
+	if (CharacterBase) {
+		CharacterBase->GetAbilitySystemComponent()->InitAbilityActorInfo(CharacterBase, CharacterBase);
 	}
 }
